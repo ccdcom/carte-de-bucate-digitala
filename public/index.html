@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>CCD — Digital Cookbook</title>
+<meta name="description" content="Any recipe, from grandma's kitchen to Michelin stars: the story, a rustic version and a Michelin 3-star version of any dish.">
+<meta name="theme-color" content="#1c1611">
+<link rel="icon" href="/icons/icon-192.png">
+<link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,500&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #1c1611;
+    --bg-elevated: #241c16;
+    --parchment: #ece2cc;
+    --text: #ece2cc;
+    --text-muted: #b3a48a;
+    --gold: #c9a24d;
+    --terracotta: #b5502d;
+    --sage: #7c8a5f;
+    --border: #3a2f24;
+    --rustic-bg: #2a2118;
+    --michelin-bg: #1a1712;
+    box-sizing: border-box;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  * { box-sizing: border-box; }
+  html { scroll-padding-top: env(safe-area-inset-top, 0px); height: 100%; }
+  body {
+    margin: 0;
+    min-height: 100%;
+    background: var(--bg);
+    background-image:
+      radial-gradient(ellipse 900px 500px at 15% -10%, rgba(201,162,77,0.08), transparent),
+      radial-gradient(ellipse 700px 500px at 100% 10%, rgba(181,80,45,0.06), transparent);
+    color: var(--text);
+    font-family: 'Work Sans', -apple-system, sans-serif;
+    padding: 40px 20px 64px;
+    line-height: 1.55;
+  }
+  .wrap { max-width: 760px; margin: 0 auto; }
+
+  /* ---- Header / brand ---- */
+  header { text-align: center; margin-bottom: 40px; }
+  .crest {
+    width: 74px; height: 74px; margin: 16px auto 20px;
+    border: 1.5px solid var(--gold);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    overflow: hidden;
+    background: radial-gradient(circle, rgba(201,162,77,0.08), transparent);
+    box-shadow: 0 0 0 4px rgba(201,162,77,0.08);
+  }
+  .crest svg { width: 26px; height: 26px; }
+  .crest img { width: 100%; height: 100%; object-fit: cover; }
+  h1 {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: 2.6rem;
+    letter-spacing: 0.06em;
+    margin: 0 0 10px;
+    color: var(--parchment);
+  }
+  .tagline {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-weight: 500;
+    color: var(--text-muted);
+    font-size: 1.05rem;
+    max-width: 420px;
+    margin: 0 auto;
+  }
+  .tagline .sep { display: block; opacity: 0.6; font-size: 0.92rem; margin-top: 4px; }
+
+  /* ---- Search ---- */
+  .search-row {
+    display: flex;
+    gap: 10px;
+    margin: 36px 0 8px;
+  }
+  #dishInput {
+    flex: 1;
+    padding: 15px 18px;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    color: var(--text);
+    font-family: 'Work Sans', sans-serif;
+    font-size: 1rem;
+  }
+  #dishInput:focus { outline: none; border-color: var(--gold); }
+  #dishInput::placeholder { color: var(--text-muted); }
+  #searchBtn {
+    padding: 15px 26px;
+    background: var(--terracotta);
+    color: var(--parchment);
+    border: none;
+    border-radius: 4px;
+    font-family: 'Work Sans', sans-serif;
+    font-weight: 600;
+    font-size: 0.95rem;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  #searchBtn:hover { background: #a2451f; }
+  #searchBtn:disabled { opacity: 0.55; cursor: default; }
+  .hint {
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    margin-bottom: 20px;
+  }
+  .examples { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-bottom: 8px; }
+  .example-chip {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    border: 1px solid var(--border);
+    padding: 6px 12px;
+    border-radius: 20px;
+    cursor: pointer;
+    background: transparent;
+    font-family: 'Work Sans', sans-serif;
+  }
+  .example-chip:hover { border-color: var(--gold); color: var(--gold); }
+
+  .book-link { text-align: center; margin: 18px 0 8px; font-size: 0.88rem; }
+  .book-link a { color: var(--gold); text-decoration: none; border-bottom: 1px solid rgba(201,162,77,0.4); }
+  .book-link a:hover { border-bottom-color: var(--gold); }
+
+  /* ---- Loading ---- */
+  #loading { display: none; text-align: center; padding: 50px 0; color: var(--text-muted); }
+  #loading .spinner {
+    width: 30px; height: 30px; margin: 0 auto 14px;
+    border: 2px solid var(--border);
+    border-top-color: var(--gold);
+    border-radius: 50%;
+    animation: spin 0.9s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  #loading .msg { font-family: 'Fraunces', serif; font-style: italic; }
+
+  #errorBox {
+    display: none;
+    background: rgba(181,80,45,0.12);
+    border: 1px solid var(--terracotta);
+    border-radius: 6px;
+    padding: 16px 18px;
+    color: var(--parchment);
+    margin: 24px 0;
+    font-size: 0.92rem;
+  }
+
+  /* ---- Results ---- */
+  #results { display: none; }
+  .dish-title {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: 1.9rem;
+    text-align: center;
+    margin: 8px 0 30px;
+    color: var(--parchment);
+  }
+
+  .story {
+    background: var(--bg-elevated);
+    border-left: 2px solid var(--gold);
+    padding: 22px 26px;
+    margin-bottom: 36px;
+    border-radius: 2px;
+  }
+  .story h3 {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-weight: 500;
+    font-size: 1.05rem;
+    color: var(--gold);
+    margin: 0 0 12px;
+  }
+  .story p {
+    font-size: 0.95rem;
+    color: var(--text-muted);
+    margin: 0 0 10px;
+  }
+  .story p:last-child { margin-bottom: 0; }
+
+  .spectrum-label {
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    letter-spacing: 0.08em;
+    margin-bottom: 14px;
+  }
+
+  .recipe-card {
+    border-radius: 6px;
+    padding: 26px 24px;
+    margin-bottom: 22px;
+    border: 1px solid var(--border);
+  }
+  .recipe-card.rustic { background: var(--rustic-bg); border-top: 3px solid var(--sage); }
+  .recipe-card.michelin { background: var(--michelin-bg); border-top: 3px solid var(--gold); }
+
+  .recipe-head { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; margin-bottom: 6px; flex-wrap: wrap; }
+  .recipe-head h2 {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: 1.3rem;
+    margin: 0;
+  }
+  .recipe-card.rustic h2 { color: var(--sage); }
+  .recipe-card.michelin h2 { color: var(--gold); }
+  .recipe-badge { font-size: 0.78rem; color: var(--text-muted); }
+
+  .recipe-intro { font-size: 0.9rem; color: var(--text-muted); font-style: italic; margin-bottom: 18px; }
+
+  .recipe-card h4 {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    letter-spacing: 0.06em;
+    margin: 18px 0 8px;
+    font-weight: 600;
+  }
+  .recipe-card ul, .recipe-card ol { margin: 0; padding-left: 20px; }
+  .recipe-card li { margin-bottom: 6px; font-size: 0.94rem; }
+  .plating {
+    margin-top: 16px;
+    padding-top: 14px;
+    border-top: 1px dashed var(--border);
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    font-style: italic;
+  }
+
+  .new-search {
+    display: block;
+    margin: 30px auto 0;
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    padding: 10px 20px;
+    border-radius: 20px;
+    font-family: 'Work Sans', sans-serif;
+    font-size: 0.88rem;
+    cursor: pointer;
+  }
+  .new-search:hover { border-color: var(--gold); color: var(--gold); }
+
+  /* ---- Paywall ---- */
+  #paywallOverlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    z-index: 100;
+  }
+  .paywall-card {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 34px 28px;
+    max-width: 380px;
+    width: 100%;
+    text-align: center;
+  }
+  .paywall-card .lock {
+    width: 52px; height: 52px; margin: 0 auto 16px;
+    border-radius: 50%;
+    background: rgba(201,162,77,0.12);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.4rem;
+  }
+  .paywall-card h2 {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: 1.4rem;
+    margin: 0 0 10px;
+    color: var(--parchment);
+  }
+  .paywall-card p {
+    font-size: 0.92rem;
+    color: var(--text-muted);
+    margin: 0 0 22px;
+    line-height: 1.55;
+  }
+  .paywall-price {
+    background: var(--rustic-bg);
+    border-radius: 6px;
+    padding: 14px 16px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+  }
+  .paywall-price span:first-child { font-size: 0.88rem; color: var(--text-muted); }
+  .paywall-price span:last-child { font-size: 1.3rem; font-weight: 600; color: var(--parchment); }
+  .paywall-price span:last-child small { font-size: 0.75rem; color: var(--text-muted); font-weight: 400; }
+  #payBtn {
+    width: 100%;
+    background: var(--terracotta);
+    color: var(--parchment);
+    border: none;
+    padding: 13px;
+    border-radius: 4px;
+    font-family: 'Work Sans', sans-serif;
+    font-weight: 600;
+    font-size: 0.95rem;
+    cursor: pointer;
+    margin-bottom: 10px;
+  }
+  #payBtn:hover { background: #a2451f; }
+  #payBtn:disabled { opacity: 0.6; cursor: default; }
+  .paywall-note { font-size: 0.75rem; color: var(--text-muted); margin: 0; }
+
+  @media (max-width: 480px) {
+    h1 { font-size: 2.1rem; }
+    .search-row { flex-direction: column; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>CCD</h1>
+    <div class="crest">
+      <img src="/logo.png" width="98" height="74" alt="Logo personal">
+    </div>
+    <p class="tagline">Any recipe, from grandma's kitchen to Michelin stars.
+      <span class="sep">Type a dish below to get its story, a rustic version and a Michelin 3-star version.</span>
+    </p>
+  </header>
+
+  <div class="search-row">
+    <input type="text" id="dishInput" placeholder="What dish are you looking for?">
+    <button id="searchBtn">Search</button>
+  </div>
+  <div class="examples">
+    <button class="example-chip" data-q="sarmale">sarmale</button>
+    <button class="example-chip" data-q="tripe soup">tripe soup</button>
+    <button class="example-chip" data-q="polenta">polenta</button>
+    <button class="example-chip" data-q="beef wellington">beef wellington</button>
+    <button class="example-chip" data-q="risotto">risotto</button>
+  </div>
+  <p class="book-link">📖 <a href="/carte">Every recipe from <em>Europe on a Plate</em></a></p>
+
+  <div id="loading">
+    <div class="spinner"></div>
+    <div class="msg" id="loadingMsg">Cooking up the recipe...</div>
+  </div>
+
+  <div id="errorBox"></div>
+
+  <div id="results">
+    <div class="dish-title" id="dishTitle"></div>
+    <div class="story" id="storyBox"></div>
+    <div class="spectrum-label" id="rusticLabel"></div>
+    <div class="recipe-card rustic" id="rusticCard"></div>
+    <div class="spectrum-label" id="michelinLabel"></div>
+    <div class="recipe-card michelin" id="michelinCard"></div>
+    <button class="new-search" id="newSearchBtn">Search another dish</button>
+  </div>
+</div>
+
+<div id="paywallOverlay">
+  <div class="paywall-card">
+    <div class="lock">🔒</div>
+    <h2 id="paywallTitle">You've used your 8 free searches</h2>
+    <p id="paywallText">Keep discovering rustic and Michelin-level recipes for any dish, with no limit.</p>
+    <div class="paywall-price">
+      <span id="paywallPriceLabel">Unlimited access</span>
+      <span>9.99 RON<small>/month</small></span>
+    </div>
+    <button id="payBtn">Continue searching</button>
+    <p class="paywall-note" id="paywallNote">Secure payment via Stripe</p>
+  </div>
+</div>
+
+<script>
+  // Endpoint-ul propriului tău backend (vezi api/cauta-reteta.js).
+  // Dacă frontend-ul și backend-ul sunt pe același domeniu (ex. Vercel),
+  // o cale relativă e suficientă.
+  const API_ENDPOINT = '/api/cauta-reteta';
+
+  // --- Limită căutări gratuite + acces plătit (ținute în acest browser) ---
+  const FREE_LIMIT = 8;
+  const paywallOverlay = document.getElementById('paywallOverlay');
+  const payBtn = document.getElementById('payBtn');
+
+  function getSearchCount() {
+    return parseInt(localStorage.getItem('ccd_searches_used') || '0', 10);
+  }
+  function incrementSearchCount() {
+    localStorage.setItem('ccd_searches_used', String(getSearchCount() + 1));
+  }
+  function isPaid() {
+    return localStorage.getItem('ccd_paid') === '1';
+  }
+  function showPaywall(isRo) {
+    document.getElementById('paywallTitle').textContent = isRo
+      ? 'Ai folosit cele 8 căutări gratuite'
+      : "You've used your 8 free searches";
+    document.getElementById('paywallText').textContent = isRo
+      ? 'Continuă să descoperi rețete rustice și interpretări Michelin pentru orice preparat, fără limită.'
+      : 'Keep discovering rustic and Michelin-level recipes for any dish, with no limit.';
+    document.getElementById('paywallPriceLabel').textContent = isRo ? 'Acces nelimitat' : 'Unlimited access';
+    payBtn.textContent = isRo ? 'Continuă căutarea' : 'Continue searching';
+    document.getElementById('paywallNote').textContent = isRo ? 'Plată securizată prin Stripe' : 'Secure payment via Stripe';
+    paywallOverlay.style.display = 'flex';
+  }
+  function hidePaywall() {
+    paywallOverlay.style.display = 'none';
+  }
+
+  payBtn.addEventListener('click', async () => {
+    payBtn.disabled = true;
+    payBtn.textContent = '...';
+    try {
+      const resp = await fetch('/api/creeaza-sesiune-plata', { method: 'POST' });
+      const data = await resp.json();
+      if (data.url) {
+        window.location.href = data.url; // redirect către Stripe Checkout
+      } else {
+        throw new Error(data.error || 'no url');
+      }
+    } catch (e) {
+      payBtn.disabled = false;
+      payBtn.textContent = 'Continue searching';
+      alert('Could not start the payment. Please try again.');
+    }
+  });
+
+  // La încărcarea paginii: dacă venim de la Stripe cu ?plata=succes, verificăm plata.
+  (async function checkPaymentReturn() {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('plata') === 'succes' && params.get('session_id')) {
+      try {
+        const resp = await fetch(`/api/verifica-plata?session_id=${encodeURIComponent(params.get('session_id'))}`);
+        const data = await resp.json();
+        if (data.platit) {
+          localStorage.setItem('ccd_paid', '1');
+        }
+      } catch (e) {}
+      // curățăm URL-ul, fără să reîncărcăm pagina
+      window.history.replaceState({}, '', window.location.pathname);
+    }
+  })();
+
+  const dishInput = document.getElementById('dishInput');
+  const searchBtn = document.getElementById('searchBtn');
+  const loading = document.getElementById('loading');
+  const loadingMsg = document.getElementById('loadingMsg');
+  const errorBox = document.getElementById('errorBox');
+  const results = document.getElementById('results');
+
+  const loadingPhrasesRo = ['Se gătește rețeta...', 'Se răsfoiește carnetul bunicii...', 'Se pune masa la bucătăria Michelin...'];
+  const loadingPhrasesEn = ['Cooking up the recipe...', "Flipping through grandma's notebook...", 'Setting the Michelin kitchen...'];
+  let loadingInterval;
+
+  function detectLangGuess(text) {
+    const roChars = /[ăâîșțĂÂÎȘȚ]/;
+    const roWords = /\b(de|cu|și|ciorbă|rețetă|mâncare|carne)\b/i;
+    if (roChars.test(text) || roWords.test(text)) return 'ro';
+    return null; // let the model decide otherwise
+  }
+
+  function escapeHtml(str) {
+    const div = document.createElement('div');
+    div.textContent = str == null ? '' : String(str);
+    return div.innerHTML;
+  }
+
+  async function searchDish(query) {
+    if (!query.trim()) return;
+
+    const langGuess0 = detectLangGuess(query);
+    if (!isPaid() && getSearchCount() >= FREE_LIMIT) {
+      showPaywall(langGuess0 === 'ro');
+      return;
+    }
+
+    // Show feedback IMMEDIATELY on click, before any async capability checks,
+    // so the page never looks frozen while connecting to the AI engine.
+    results.style.display = 'none';
+    errorBox.style.display = 'none';
+    loading.style.display = 'block';
+    searchBtn.disabled = true;
+
+    const langGuess = detectLangGuess(query);
+    const phrases = langGuess === 'ro' ? loadingPhrasesRo : loadingPhrasesEn;
+    let pi = 0;
+    loadingMsg.textContent = phrases[0];
+    loadingInterval = setInterval(() => {
+      pi = (pi + 1) % phrases.length;
+      loadingMsg.textContent = phrases[pi];
+    }, 2200);
+
+    try {
+      const response = await fetch(API_ENDPOINT, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ query })
+      });
+
+      if (!response.ok) {
+        const errData = await response.json().catch(() => ({}));
+        throw new Error(errData.error || `HTTP ${response.status}`);
+      }
+
+      const data = await response.json();
+      renderResults(data);
+      if (!isPaid()) incrementSearchCount();
+    } catch (e) {
+      console.error(e);
+      errorBox.style.display = 'block';
+      errorBox.textContent = (langGuess === 'ro')
+        ? 'Nu am putut găti rețeta acum. Mai încearcă o dată.'
+        : 'Could not cook up the recipe right now. Please try again.';
+    } finally {
+      clearInterval(loadingInterval);
+      loading.style.display = 'none';
+      searchBtn.disabled = false;
+    }
+  }
+
+  function renderResults(data) {
+    const isRo = data.language === 'ro';
+
+    document.getElementById('dishTitle').textContent = data.dish_name || '';
+
+    const storyBox = document.getElementById('storyBox');
+    storyBox.innerHTML = `<h3>${isRo ? 'Povestea preparatului' : 'The story behind the dish'}</h3>` +
+      (data.story_paragraphs || []).map(p => `<p>${escapeHtml(p)}</p>`).join('');
+
+    document.getElementById('rusticLabel').textContent = isRo ? 'VARIANTA ȚĂRĂNEASCĂ' : 'THE RUSTIC VERSION';
+    document.getElementById('michelinLabel').textContent = isRo ? 'VARIANTA MICHELIN 3 STELE' : 'THE MICHELIN 3-STAR VERSION';
+
+    const r = data.rustic || {};
+    document.getElementById('rusticCard').innerHTML = `
+      <div class="recipe-head"><h2>${escapeHtml(r.title || '')}</h2></div>
+      <div class="recipe-intro">${escapeHtml(r.intro || '')}</div>
+      <h4>${isRo ? 'INGREDIENTE' : 'INGREDIENTS'}</h4>
+      <ul>${(r.ingredients || []).map(i => `<li>${escapeHtml(i)}</li>`).join('')}</ul>
+      <h4>${isRo ? 'MOD DE PREPARARE' : 'METHOD'}</h4>
+      <ol>${(r.steps || []).map(s => `<li>${escapeHtml(s)}</li>`).join('')}</ol>
+    `;
+
+    const m = data.michelin || {};
+    document.getElementById('michelinCard').innerHTML = `
+      <div class="recipe-head"><h2>${escapeHtml(m.title || '')}</h2></div>
+      <div class="recipe-intro">${escapeHtml(m.intro || '')}</div>
+      <h4>${isRo ? 'INGREDIENTE' : 'INGREDIENTS'}</h4>
+      <ul>${(m.ingredients || []).map(i => `<li>${escapeHtml(i)}</li>`).join('')}</ul>
+      <h4>${isRo ? 'TEHNICĂ' : 'METHOD'}</h4>
+      <ol>${(m.steps || []).map(s => `<li>${escapeHtml(s)}</li>`).join('')}</ol>
+      ${m.plating ? `<div class="plating">${escapeHtml(m.plating)}</div>` : ''}
+    `;
+
+    document.getElementById('newSearchBtn').textContent = isRo ? 'Caută altă rețetă' : 'Search another dish';
+
+    results.style.display = 'block';
+    results.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  searchBtn.addEventListener('click', () => searchDish(dishInput.value));
+  dishInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') searchDish(dishInput.value); });
+  document.querySelectorAll('.example-chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      dishInput.value = chip.dataset.q;
+      searchDish(chip.dataset.q);
+    });
+  });
+  document.getElementById('newSearchBtn').addEventListener('click', () => {
+    results.style.display = 'none';
+    dishInput.value = '';
+    dishInput.focus();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+</script>
+</body>
+</html>

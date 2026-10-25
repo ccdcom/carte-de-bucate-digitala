@@ -1,0 +1,12 @@
+{
+  "name": "ccd-carte-de-bucate-digitala",
+  "version": "1.0.0",
+  "description": "CCD — Carte de Bucate Digitală: aplicație independentă (frontend static + backend serverless Vercel) care generează povestea și două rețete (rustică și Michelin) pentru orice preparat, cu 10 căutări gratuite și abonament Stripe pentru acces nelimitat.",
+  "private": true,
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "stripe": "^17.0.0"
+  }
+}
