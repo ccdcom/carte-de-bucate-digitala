@@ -463,6 +463,23 @@
     }
   });
 
+  // Adresa secretă a proprietarului: ?cheie=... deblochează căutările nelimitate pe acest dispozitiv.
+  const OWNER_KEY_HASH = 'a90c6a0d6294db3f1c00a7bcc7dd90fd43e30372ee294a215bf7b5fb5177d82d';
+  (async function checkOwnerKey() {
+    const params = new URLSearchParams(window.location.search);
+    const key = params.get('cheie');
+    if (!key) return;
+    try {
+      const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(key));
+      const hex = Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+      if (hex === OWNER_KEY_HASH) {
+        localStorage.setItem('ccd_paid', '1');
+        alert('Unlimited access unlocked on this device.');
+      }
+    } catch (e) {}
+    window.history.replaceState({}, '', window.location.pathname);
+  })();
+
   // La încărcarea paginii: dacă venim de la Stripe cu ?plata=succes, verificăm plata.
   (async function checkPaymentReturn() {
     const params = new URLSearchParams(window.location.search);
