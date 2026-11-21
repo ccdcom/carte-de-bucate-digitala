@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <base href="/atlas/" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Interactive Culinary Atlas of the World — by Christian Coandă</title>
+  <meta name="description" content="Michelin-starred restaurants of the world on an interactive 3D globe. Created by Christian Coandă." />
+  <meta name="author" content="Christian Coandă" />
+  <meta name="theme-color" content="#000000" />
+  <link rel="icon" type="image/png" href="assets/img/logo-coanda.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div id="globe" aria-label="Interactive 3D globe"></div>
+  <div id="loader"><div class="loader-ring"></div><span>Preparing the world's table…</span></div>
+
+  <!-- Owner crest -->
+  <a id="brand" class="brand" target="_blank" rel="noopener" aria-label="Christian Coandă">
+    <img src="assets/img/logo-coanda.png" alt="Christian Coandă crest" width="86" height="60" />
+    <span class="brand-name">Christian Coandă</span>
+  </a>
+
+  <!-- Title -->
+  <header class="title">
+    <h1>Interactive Culinary Atlas <em>of the World</em></h1>
+    <p class="powered">Powered by <a id="poweredLink" target="_blank" rel="noopener">Europe on a Plate</a></p>
+    <p class="tagline">Michelin-Starred Restaurants Worldwide</p>
+  </header>
+
+  <!-- Panel -->
+  <aside id="panel" class="panel glass" aria-label="Navigation">
+    <button id="panelToggle" class="panel-toggle" aria-label="Collapse panel" title="Collapse / expand">
+      <svg viewBox="0 0 24 24" width="16" height="16"><path d="M15 6l-6 6 6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    </button>
+    <div class="panel-inner">
+      <div class="search">
+        <svg class="search-ico" viewBox="0 0 24 24" width="16" height="16"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="M20 20l-4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        <input id="searchInput" type="search" placeholder="Search restaurant, city, country…" autocomplete="off" aria-label="Search" />
+        <ul id="searchResults" class="search-results" role="listbox"></ul>
+      </div>
+
+      <section>
+        <h2>Filters</h2>
+        <div id="starFilters" class="star-filters"></div>
+      </section>
+
+      <section class="countries-section">
+        <h2>Countries</h2>
+        <ul id="countryList" class="country-list"></ul>
+      </section>
+
+      <p class="panel-foot">Drag to rotate · Scroll to zoom</p>
+    </div>
+  </aside>
+
+  <footer class="footer">Created by <span>Christian Coandă</span></footer>
+
+  <!-- Restaurant card -->
+  <article id="card" class="card glass" aria-live="polite" hidden></article>
+
+  <script src="assets/vendor/globe.gl.min.js"></script>
+  <script src="js/textures.js"></script>
+  <script src="js/config.js"></script>
+  <script src="data/restaurants.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
