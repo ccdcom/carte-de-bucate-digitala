@@ -112,6 +112,11 @@ button, input { font: inherit; color: inherit; }
 .card-btn { display: inline-block; margin-top: 18px; padding: 9px 20px; border-radius: 999px; text-decoration: none; font-size: .84rem; letter-spacing: .04em; color: #1a1406; background: linear-gradient(180deg, #ffe08a, #d9ae3b); box-shadow: 0 4px 18px rgba(255,200,80,.25); }
 .card-btn:hover { filter: brightness(1.08); }
 
+/* visitor counter — bottom centre, above the footer, same size as the footer text */
+.visitors { position: fixed; bottom: 34px; left: 50%; transform: translateX(-50%); z-index: 10; font-family: var(--serif); font-size: .82rem; letter-spacing: .12em; color: #ffe9a8; font-variant-numeric: tabular-nums; text-shadow: 0 0 10px rgba(255,210,100,.45), 0 1px 2px #000; pointer-events: none; }
+.visitors[hidden] { display: none; }
+@media (max-width: 720px) { .visitors { display: none; } }
+
 /* footer */
 .footer { position: fixed; bottom: 12px; left: 50%; transform: translateX(-50%); z-index: 10; font-family: var(--serif); font-size: .82rem; letter-spacing: .08em; color: rgba(243,239,230,.82); pointer-events: none; text-shadow: 0 1px 8px rgba(0,0,0,.9); }
 .footer span { color: #ffe9a8; text-shadow: 0 0 10px rgba(255,210,100,.45), 0 1px 2px #000; }

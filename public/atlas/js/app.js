@@ -129,7 +129,6 @@
       <button class="card-close" aria-label="Close">×</button>
       <div class="card-photo s${r.stars}">
         ${r.image ? `<img src="${esc(r.image)}" alt="${esc(r.name)}" />` : crest(mono, r.stars)}
-        ${visitors != null ? `<div class="card-counter">${visitors.toLocaleString("ro-RO")}</div>` : ""}
       </div>
       <div class="card-body s${r.stars}">
         <div class="card-stars">${starsText(r.stars)}</div>
@@ -258,6 +257,9 @@
       if (!r.ok) return;
       const j = await r.json();
       visitors = j.vizitatori;
+      const v = $("#visitors");
+      v.textContent = Number(visitors).toLocaleString("ro-RO");
+      v.hidden = false;
       try { localStorage.setItem("ccd-atlas-vizitat", "1"); } catch (e) {}
     } catch (e) { /* no counter */ }
   })();
