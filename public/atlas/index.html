@@ -28,7 +28,7 @@
   <header class="title">
     <h1>Interactive Culinary Atlas <em>of the World</em></h1>
     <p class="tagline">Michelin-Starred Restaurants Worldwide</p>
-    <p class="powered">Powered by <a id="poweredLink" target="_blank" rel="noopener">Europe on a Plate</a></p>
+    <p class="powered"><button id="eopBtn" class="eop-btn" type="button" aria-haspopup="dialog" aria-controls="eopModal">Powered by <span>Europe on a Plate</span></button></p>
   </header>
 
   <!-- Panel -->
@@ -58,6 +58,27 @@
   </aside>
 
   <footer class="footer">Created by <span>Christian Coandă</span></footer>
+
+  <!-- Europe on a Plate panel -->
+  <div id="eopModal" class="eop" role="dialog" aria-modal="true" aria-labelledby="eopTitle" hidden>
+    <div class="eop-backdrop" data-close></div>
+    <article class="eop-panel">
+      <button class="eop-close" type="button" aria-label="Close" data-close>×</button>
+      <div class="eop-ornament" aria-hidden="true"><span></span>✦<span></span></div>
+      <h2 id="eopTitle">Europe on a Plate</h2>
+      <p class="eop-sub">A Culinary Journey Through Europe's Finest Destinations</p>
+      <div class="eop-body">
+        <p>Europe on a Plate is an award-winning culinary journey through the cultures, traditions, flavors and destinations of Europe.</p>
+        <p>Written by Christian Coandă and Mariana Caragiu Coandă, the book combines gastronomy, travel, history and cultural discovery into a unique exploration of the European continent.</p>
+        <p>From traditional family recipes and regional specialties to the stories behind Europe's most memorable culinary experiences, Europe on a Plate offers readers an inspiring view of the people, places and traditions that shape European cuisine.</p>
+        <p>As an added bonus, readers also gain access to a collection of complimentary recipes inspired by the regions featured in the book.</p>
+        <h3>About the Authors</h3>
+        <p>Christian Coandă and Mariana Caragiu Coandă are authors, travelers and culinary enthusiasts who share a passion for culture, history, food and discovery.</p>
+        <p>Through books and digital projects, they aim to connect readers with the traditions and stories that make world cuisine one of humanity's richest cultural treasures.</p>
+      </div>
+      <a id="eopBuy" class="eop-buy" target="_blank" rel="noopener">Buy Europe on a Plate on Amazon</a>
+    </article>
+  </div>
 
   <!-- Restaurant card -->
   <article id="card" class="card glass" aria-live="polite" hidden></article>

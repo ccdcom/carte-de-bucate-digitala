@@ -6,6 +6,9 @@
 window.ATLAS_CONFIG = {
   owner: "Christian Coandă",
 
+  /* ---- Amazon page for "Europe on a Plate": replace this one line with the book's exact Amazon link ---- */
+  amazonUrl: "https://www.amazon.com/s?k=Europe+on+a+Plate+Coanda",
+
   links: {
     logo: "https://carte-de-bucate-digitala.vercel.app",
     europeOnAPlate: "https://carte-de-bucate-digitala.vercel.app/carte"

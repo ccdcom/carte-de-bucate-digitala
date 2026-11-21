@@ -227,7 +227,26 @@
   /* ---- Panel collapse, links */
   $("#panelToggle").onclick = () => $("#panel").classList.toggle("collapsed");
   $("#brand").href = CFG.links.logo;
-  $("#poweredLink").href = CFG.links.europeOnAPlate;
+
+  /* ---- Europe on a Plate panel */
+  const eop = $("#eopModal"), eopBtn = $("#eopBtn");
+  $("#eopBuy").href = CFG.amazonUrl;
+  function openEop() {
+    eop.hidden = false;
+    requestAnimationFrame(() => eop.classList.add("open"));
+    document.body.classList.add("eop-lock");
+    eop.querySelector(".eop-close").focus();
+  }
+  function closeEop() {
+    if (eop.hidden) return;
+    eop.classList.remove("open");
+    document.body.classList.remove("eop-lock");
+    setTimeout(() => { eop.hidden = true; }, 320);
+    eopBtn.focus();
+  }
+  eopBtn.onclick = openEop;
+  eop.addEventListener("click", (e) => { if (e.target.closest("[data-close]")) closeEop(); });
+  addEventListener("keydown", (e) => { if (e.key === "Escape" && !eop.hidden) { e.stopImmediatePropagation(); closeEop(); } }, true);
 
   /* ---- Visitor counter (works on the live site; hidden if unavailable) */
   let visitors = null;
