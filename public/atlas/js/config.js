@@ -7,7 +7,7 @@ window.ATLAS_CONFIG = {
   owner: "Christian Coandă",
 
   /* ---- Amazon page for "Europe on a Plate": replace this one line with the book's exact Amazon link ---- */
-  amazonUrl: "https://www.amazon.com/s?k=Europe+on+a+Plate+Coanda",
+  amazonUrl: "https://www.amazon.com/dp/B0HJ97HVNC",
 
   links: {
     logo: "https://carte-de-bucate-digitala.vercel.app",
@@ -29,6 +29,6 @@ window.ATLAS_CONFIG = {
     atmosphereAltitude: 0.2,
     autoRotateSpeed: 0.6,
     idleSeconds: 6,
-    startView: { lat: 40, lng: 12, altitude: 1.95 }
+    startView: { lat: 40, lng: 12, altitude: 2.35 }
   }
 };
